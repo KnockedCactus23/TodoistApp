@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct TodoistAppApp: App {
+struct TodoistApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
