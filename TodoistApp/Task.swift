@@ -10,10 +10,16 @@ import SwiftData
 
 @Model
 public class Task{
+    enum Priority: Int, Codable {
+        case low = 1
+        case medium = 2
+        case high = 3
+    }
+    
     var id : UUID
     var title : String
     var details : String
-    var priority : Int
+    var priority : Priority
     var date : Date
     var isCompleted : Bool
     
@@ -21,7 +27,7 @@ public class Task{
         id: UUID = UUID(),
         title: String,
         details: String,
-        priority: Int,
+        priority: Priority,
         date: Date,
         isCompleted: Bool = false
     ) {
