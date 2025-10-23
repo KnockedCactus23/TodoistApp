@@ -10,11 +10,11 @@ import SwiftUI
 struct TaskListView: View {
     var task : Task
     
-    // Formateador de fecha legible
+    // Formateador de fecha legible, día de la actividad
     private var formattedDate: String {
-        task.date.formatted(date: .abbreviated, time: .shortened)
+        task.date.formatted(.dateTime.weekday(.wide))
     }
-    
+
     // Color según prioridad
     private var priorityColor: Color {
         switch task.priority {
@@ -52,10 +52,10 @@ struct TaskListView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "calendar")
                         .font(.caption)
-                        .foregroundColor(.purple.opacity(0.7))
+                        .foregroundColor(.brown.opacity(1))
                     Text(formattedDate)
                         .font(.caption)
-                        .foregroundColor(.purple.opacity(0.7))
+                        .foregroundColor(.brown.opacity(1))
                 }
             }
             Spacer()
