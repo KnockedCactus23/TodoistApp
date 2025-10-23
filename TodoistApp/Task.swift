@@ -11,13 +11,6 @@ import SwiftData
 // Modelo utilizado para los datos
 @Model
 public class Task{
-    // Priority es un enum
-    enum Priority: Int, Codable {
-        case low = 1
-        case medium = 2
-        case high = 3
-    }
-    
     public var id : UUID // id auto generado
     var title : String
     var details : String

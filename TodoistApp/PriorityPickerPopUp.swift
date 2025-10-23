@@ -7,12 +7,46 @@
 
 import SwiftUI
 
-struct PriorityPickerPopUp: View {
+struct PriorityPickerPopup: View {
+    @Environment(\.dismiss) private var dismiss
+    @Bindable var task: Task
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            List {
+                ForEach(Priority.allCases, id: \.self) { priority in
+                    priorityRow(priority)
+                }
+            }
+            .navigationTitle("Seleccionar prioridad")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") { dismiss() }
+                }
+            }
+        }
+    }
+    
+    private func priorityRow(_ priority: Priority) -> some View {
+        HStack {
+            Circle()
+                .fill(priority.color)
+                .frame(width: 16, height: 16)
+            
+            Text(priority.text)
+            
+            Spacer()
+            
+            if task.priority == priority {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(.background)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            task.priority = priority
+            dismiss()
+        }
     }
 }
 
-#Preview {
-    PriorityPickerPopUp()
-}
