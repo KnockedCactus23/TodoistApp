@@ -7,46 +7,59 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct PriorityPickerPopup: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var task: Task
+    @Binding var priority: Priority   // Binding directo
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(Priority.allCases, id: \.self) { priority in
-                    priorityRow(priority)
+            VStack(spacing: 0) {
+                // Lista de prioridades
+                ForEach(Priority.allCases.sorted(by: { $0.rawValue > $1.rawValue }), id: \.self) { p in
+                    HStack(spacing: 12) {
+                        Image(systemName: "flag.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(p.color)
+                        
+                        Text(p.text)
+                            .font(.title3)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        if priority == p {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.red)
+                        }
+                    }
+                    .padding()
+                    .background(Color.clear)
+                    .onTapGesture {
+                        withAnimation {
+                            priority = p
+                        }
+                        dismiss()
+                    }
+                    
+                    if p != Priority.allCases.first {
+                        Divider()
+                            .padding(.leading)
+                    }
                 }
-            }
-            .navigationTitle("Seleccionar prioridad")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") { dismiss() }
+                
+                // Botón cancelar
+                Button("Cancelar") {
+                    dismiss()
                 }
+                .font(.title2)
+                .background(Color.clear)
+                .foregroundColor(.black)
+                .padding(.top, 20)
             }
-        }
-    }
-    
-    private func priorityRow(_ priority: Priority) -> some View {
-        HStack {
-            Circle()
-                .fill(priority.color)
-                .frame(width: 16, height: 16)
-            
-            Text(priority.text)
-            
-            Spacer()
-            
-            if task.priority == priority {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(.background)
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            task.priority = priority
-            dismiss()
+            .padding()
         }
     }
 }
-

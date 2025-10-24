@@ -11,12 +11,12 @@ import SwiftData
 // Modelo utilizado para los datos
 @Model
 public class Task{
-    public var id : UUID // id auto generado
-    var title : String
-    var details : String
-    var priority : Priority
-    var date : Date
-    var isCompleted : Bool // para verificar si una tarea esta completa o no
+    @Attribute(.unique) public var id: UUID = UUID()
+    @Attribute var title : String
+    @Attribute var details : String
+    @Attribute var priority : Priority
+    @Attribute var date : Date
+    @Attribute var isCompleted : Bool // para verificar si una tarea esta completa o no
     
     init(
         id: UUID = UUID(),

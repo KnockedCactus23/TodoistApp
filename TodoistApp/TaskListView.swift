@@ -9,32 +9,46 @@ import SwiftUI
 
 struct TaskListView: View {
     var task : Task
+    var onDelete: () -> Void
+    
+    // Controlar animación
+    @State private var animate = false
+    @State private var showCheck = false
     
     // Formateador de fecha legible, día de la actividad
     private var formattedDate: String {
         task.date.formatted(.dateTime.weekday(.wide))
     }
-
-    // Color según prioridad
-    private var priorityColor: Color {
-        switch task.priority {
-        case .high:
-            return .red.opacity(0.7)
-        case .medium:
-            return .orange.opacity(0.7)
-        case .low:
-            return .blue.opacity(0.7)
-        }
-    }
     
     var body: some View {
         HStack (alignment: .top, spacing: 12) {
-            // Circulo de Prioridad
-            Circle()
-                .fill(priorityColor)
-                .overlay(Circle().stroke(style: StrokeStyle(lineWidth: 1)))
-                .frame(width: 20, height: 20)
-                .padding(.top, 2)
+            // Botón de Prioridad, servirá para eliminar tareas
+            Button(action: {
+                completeAndDeleteAnimation()
+            }){
+                ZStack{
+                    Circle()
+                        .fill(task.priority.color)
+                        .overlay(Circle().stroke(style: StrokeStyle(lineWidth: 1)))
+                        .frame(width: 20, height: 20)
+                        .padding(.top, 2)
+                        .scaleEffect(animate ? 1.2 : 1.0)
+                    
+                    if showCheck{
+                        Circle()
+                            .fill(task.priority.color)
+                            .frame(width: 20, height: 20)
+                            .padding(.top, 2)
+                            .overlay(
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundStyle(.white)
+                            )
+                            .transition(.scale)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
             
             VStack (alignment: .leading, spacing: 6){
                 // Titulo de la tarea
@@ -52,26 +66,34 @@ struct TaskListView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "calendar")
                         .font(.caption)
-                        .foregroundColor(.brown.opacity(1))
-                    Text(formattedDate)
+                        .foregroundColor(TaskDateFormatter.color(for: task.date))
+                    Text(TaskDateFormatter.formattedString(for: task.date))
                         .font(.caption)
-                        .foregroundColor(.brown.opacity(1))
+                        .foregroundColor(TaskDateFormatter.color(for: task.date))
                 }
             }
             Spacer()
         }
-        .padding(.horizontal)
-        .padding(.vertical)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 2)
-        )
-        .padding(.horizontal)
-
+        .animation(.spring(), value: animate)
+        .animation(.easeInOut, value: showCheck)
     }
-}
-
-#Preview {
-    TaskListView(task: Task(id: UUID(), title: "MobileActivity08", details: "Tarea de Software", priority: .low, date: Date(), isCompleted: false))
+    
+    // Función de animación + eliminación con delay
+    private func completeAndDeleteAnimation() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            animate = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation {
+                showCheck = true
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            withAnimation {
+                onDelete()
+            }
+        }
+    }
 }

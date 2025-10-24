@@ -23,15 +23,16 @@ struct TaskEditView: View {
     
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12){
+        VStack(alignment: .leading, spacing: 20){
             // Encabezado
             HStack{
                 Circle()
                     .fill(task.priority.color)
                     .overlay(Circle().stroke(style: StrokeStyle(lineWidth: 1)))
-                    .frame(width: 20, height: 20)
+                    .frame(width: 25, height: 25)
                 Text(task.title)
-                    .font(.headline)
+                    .font(.title2)
+                    .bold()
                     .onTapGesture{
                         showEditPopup = true
                     }
@@ -40,7 +41,7 @@ struct TaskEditView: View {
             
             // Descripción
             Label(task.details, systemImage: "text.alignleft")
-                .font(.subheadline)
+                .font(.title3)
                 .onTapGesture{
                     showEditPopup = true
                 }
@@ -49,8 +50,15 @@ struct TaskEditView: View {
             
             // Fecha
             HStack{
-                Label(formattedDate, systemImage: "calendar")
-                    .font(.subheadline)
+                Image(systemName: "calendar")
+                    .font(.title3)
+                    .foregroundColor(TaskDateFormatter.color(for: task.date))
+                    .onTapGesture{
+                        showDatePicker = true
+                    }
+
+                Text(TaskDateFormatter.formattedString(for: task.date))
+                    .font(.title3)
                     .onTapGesture{
                         showDatePicker = true
                     }
@@ -61,30 +69,38 @@ struct TaskEditView: View {
             
             // Prioridad
             HStack{
-                Label(task.priority.text, systemImage: "flag.fill")
-                    .font(.subheadline)
+                Image(systemName: "flag.fill")
+                    .font(.title3)
+                    .foregroundColor(task.priority.color)
+                    .onTapGesture{
+                        showPriorityPicker = true
+                    }
+
+                Text(task.priority.text)
+                    .font(.title3)
                     .onTapGesture{
                         showPriorityPicker = true
                     }
                 Spacer()
             }
+            Spacer()
         }
         .padding()
         .padding(.horizontal, 5)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .shadow(color: .gray.opacity(0.2), radius: 3)
-        )
+        .padding(.top, 30)
         // Popups
         .sheet(isPresented: $showEditPopup) {
             EditTaskPopup(task: task)
         }
         .sheet(isPresented: $showDatePicker) {
             DatePickerPopup(task: task)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $showPriorityPicker) {
-            PriorityPickerPopup(task: task)
+            PriorityPickerPopup(priority: $task.priority)
+                .presentationDetents([.height(300)])
+                .presentationDragIndicator(.visible)
         }
         .padding(.horizontal)
         
