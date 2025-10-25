@@ -11,11 +11,6 @@ struct TaskEditView: View {
     
     @Bindable var task : Task
     
-    // Formateador de fecha legible, día de la actividad
-    private var formattedDate: String {
-        task.date.formatted(.dateTime.weekday(.wide))
-    }
-    
     // Pop-ups
     @State private var showEditPopup = false
     @State private var showDatePicker = false
@@ -24,7 +19,7 @@ struct TaskEditView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20){
-            // Encabezado
+            // Titulo y Prioridad
             HStack{
                 Circle()
                     .fill(task.priority.color)
@@ -88,7 +83,8 @@ struct TaskEditView: View {
         .padding()
         .padding(.horizontal, 5)
         .padding(.top, 30)
-        // Popups
+        
+        // Pop-ups
         .sheet(isPresented: $showEditPopup) {
             EditTaskPopup(task: task)
         }

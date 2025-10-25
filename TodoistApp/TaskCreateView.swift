@@ -9,19 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct TaskCreateView: View {
-    // Formateador de fecha legible, día de la actividad
-    private var formattedDate: String {
-        newTask.date.formatted(.dateTime.weekday(.wide))
-    }
-    
     // Pop-ups
     @State private var showDatePicker = false
     @State private var showPriorityPicker = false
     
-    // Para crear una nueva tarea
     @Environment(\.dismiss) private var dismiss
     var context : ModelContext
     
+    // Variable para crear una nueva tarea
     @State private var newTask = Task(
         title: "",
         details: "",
@@ -29,14 +24,14 @@ struct TaskCreateView: View {
         date: Date()
     )
     
-    // Función para verificar que el titulo de la tarea no este vacío
+    // Función para verificar que el titulo de la tarea no este vacío o sea solo espacios
     static func isValidName(_ name: String) -> Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var body: some View {
         ZStack{
-            // Fondo gradiente
+            // Fondo
             LinearGradient(
                 colors: [.white, .red.opacity(0.3)],
                 startPoint: .top,
@@ -45,7 +40,7 @@ struct TaskCreateView: View {
             .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 12){
-                // Input título
+                // Input titulo
                 TextField("Nombre de la tarea", text: $newTask.title)
                     .font(.title3)
                 
@@ -55,7 +50,7 @@ struct TaskCreateView: View {
                     .padding(.bottom, 5)
                 
                 HStack(spacing: 12) {
-                    // Botón fecha
+                    // Botón para selector de fecha
                     HStack {
                         Label(TaskDateFormatter.formattedString(for: newTask.date).capitalized, systemImage: "calendar")
                             .foregroundColor(TaskDateFormatter.color(for: newTask.date))
@@ -66,7 +61,7 @@ struct TaskCreateView: View {
                     .contentShape(Rectangle())
                     .onTapGesture { showDatePicker = true }
                     
-                    // Botón prioridad
+                    // Botón para seleccionar prioridad
                     HStack {
                         Label(newTask.priority.text, systemImage: "flag.fill")
                             .foregroundColor(newTask.priority.color)
@@ -80,8 +75,8 @@ struct TaskCreateView: View {
                 
                 Divider()
                 
+                // Botón para agregar la tarea
                 Button(action: {
-                    // Acción para agregar tarea
                     context.insert(newTask)
                     dismiss()
                 }) {
@@ -93,7 +88,7 @@ struct TaskCreateView: View {
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
-                .disabled(!TaskCreateView.isValidName(newTask.title))
+                .disabled(!TaskCreateView.isValidName(newTask.title)) // El botón está desactivado si no se tiene un nombre válido
             }
             .padding(20)
             .background(
@@ -101,7 +96,7 @@ struct TaskCreateView: View {
                     .fill(Color(.systemBackground))
                     .shadow(color: .gray.opacity(0.2), radius: 3)
             )
-            // Popups
+            // Pop-ups
             .sheet(isPresented: $showDatePicker) {
                 DatePickerPopup(task: newTask)
                     .presentationDetents([.medium])

@@ -11,14 +11,9 @@ struct TaskListView: View {
     var task : Task
     var onDelete: () -> Void
     
-    // Controlar animación
+    // Controla la animación
     @State private var animate = false
     @State private var showCheck = false
-    
-    // Formateador de fecha legible, día de la actividad
-    private var formattedDate: String {
-        task.date.formatted(.dateTime.weekday(.wide))
-    }
     
     var body: some View {
         HStack (alignment: .top, spacing: 12) {
@@ -78,7 +73,7 @@ struct TaskListView: View {
         .animation(.easeInOut, value: showCheck)
     }
     
-    // Función de animación + eliminación con delay
+    // Función de animación y eliminación con delay
     private func completeAndDeleteAnimation() {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
             animate = true

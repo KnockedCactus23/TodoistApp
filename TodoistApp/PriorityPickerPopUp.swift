@@ -11,12 +11,12 @@ import SwiftUI
 
 struct PriorityPickerPopup: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var priority: Priority   // Binding directo
+    @Binding var priority: Priority
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Lista de prioridades
+                // Lista de prioridades disponibles
                 ForEach(Priority.allCases.sorted(by: { $0.rawValue > $1.rawValue }), id: \.self) { p in
                     HStack(spacing: 12) {
                         Image(systemName: "flag.fill")
@@ -30,6 +30,7 @@ struct PriorityPickerPopup: View {
                         
                         Spacer()
                         
+                        // Si la prioridad está seleccionada se muestra un checkmark
                         if priority == p {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.red)
@@ -37,6 +38,7 @@ struct PriorityPickerPopup: View {
                     }
                     .padding()
                     .background(Color.clear)
+                    // Al hacer clic se selecciona la prioridad indicada
                     .onTapGesture {
                         withAnimation {
                             priority = p
@@ -50,7 +52,7 @@ struct PriorityPickerPopup: View {
                     }
                 }
                 
-                // Botón cancelar
+                // Botón de cancelar
                 Button("Cancelar") {
                     dismiss()
                 }

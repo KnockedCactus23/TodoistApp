@@ -10,10 +10,10 @@ import SwiftUI
 struct DatePickerPopup: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var task: Task
+
+    @State private var tempDate: Date // Variable temporal de la fecha
     
-    // Variable temporal de la fecha
-    @State private var tempDate: Date
-    
+    // Inicializador
     init(task: Task) {
         self.task = task
         _tempDate = State(initialValue: task.date)
@@ -22,7 +22,7 @@ struct DatePickerPopup: View {
     var body: some View {
         NavigationStack {
             ZStack{
-                // Fondo gradiente
+                // Fondo
                 LinearGradient(
                     colors: [.white, .red.opacity(0.3)],
                     startPoint: .top,
@@ -31,6 +31,7 @@ struct DatePickerPopup: View {
                 .ignoresSafeArea()
                 
                 VStack(spacing: 24) {
+                    // Selector de Fecha
                     DatePicker("", selection: $tempDate, in:Date()..., displayedComponents: .date)
                         .datePickerStyle(.graphical)
                         .accentColor(Color(.red))
@@ -41,6 +42,7 @@ struct DatePickerPopup: View {
                 .navigationTitle("Fecha")
                 .navigationBarTitleDisplayMode(.inline)
                 
+                // Botones de guardar y cancelar
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancelar") { dismiss() }

@@ -19,14 +19,14 @@ struct TaskHomeView: View {
 
     @State private var selectedTask: Task? = nil
     
+    // Manejo de errores
     @State private var errorMessage: String?
     @State private var showErrorAlert = false
     
     var body: some View {
         NavigationStack {
             ZStack {
-                
-                // Fondo gradiente
+                // Fondo
                 LinearGradient(
                     colors: [.white, .red.opacity(0.3)],
                     startPoint: .top,
@@ -34,6 +34,7 @@ struct TaskHomeView: View {
                 )
                 .ignoresSafeArea()
             
+                // Si las tareas están vacías, se muestra que no hay tareas por hacer
                 if tasks.isEmpty {
                     VStack(spacing: 12) {
                         Image(systemName: "checkmark.circle")
@@ -47,6 +48,7 @@ struct TaskHomeView: View {
                             .bold()
                     }
                 } else {
+                    // Se muestran en orden las tareas por hacer
                     List {
                         ForEach(tasks) { task in
                             TaskListView(task: task){
@@ -60,6 +62,7 @@ struct TaskHomeView: View {
                                 }
                             }
                                 .listRowBackground(Color.clear)
+                                // Controla la vista de edición al hacer clic en la tarea
                                 .onTapGesture {
                                     selectedTask = task
                                 }
@@ -68,7 +71,7 @@ struct TaskHomeView: View {
                     .scrollContentBackground(.hidden)
                 }
                 
-                // Botón agregar más tareas
+                // Botón para agregar más tareas
                 VStack {
                     Spacer()
                     HStack {
@@ -93,8 +96,8 @@ struct TaskHomeView: View {
 
             .sheet(isPresented: $showingCreateView) {
                 TaskCreateView(context: context)
-                    .presentationDetents([.medium, .height(500)]) // Altura del sheet
-                    .presentationDragIndicator(.visible)     // Muestra el “handle” para arrastrar
+                    .presentationDetents([.medium, .height(500)])
+                    .presentationDragIndicator(.visible)
             }
             
             // Activar vista de edición
@@ -104,6 +107,7 @@ struct TaskHomeView: View {
                     .presentationDragIndicator(.visible)
             }
             
+            // Manejo de errores
             .alert(isPresented: $showErrorAlert) {
                 Alert(
                     title: Text("¡Oops!"),

@@ -13,9 +13,11 @@ struct EditTaskPopup: View {
     @Environment(\.modelContext) private var context
     @Bindable var task: Task
     
+    // Variables de titulo y descripción temporales
     @State private var tempTitle: String
     @State private var tempDetails: String
     
+    // Mensajes y alertas de error
     @State private var errorMessage: String?
     @State private var showErrorAlert = false
     
@@ -29,7 +31,7 @@ struct EditTaskPopup: View {
     var body: some View {
         NavigationStack {
             ZStack{
-                // Fondo gradiente
+                // Fondo
                 LinearGradient(
                     colors: [.white, .red.opacity(0.3)],
                     startPoint: .top,
@@ -38,7 +40,7 @@ struct EditTaskPopup: View {
                 .ignoresSafeArea()
              
                 VStack(alignment: .leading, spacing: 20){
-                    // TITULO DE LA TAREA
+                    // Titulo de la tarea
                     HStack {
                         Circle()
                             .fill(task.priority.color)
@@ -51,7 +53,7 @@ struct EditTaskPopup: View {
                             .foregroundColor(.primary)
                     }
                     
-                    // DESCRIPCION
+                    // Descripción de la tarea
                     HStack {
                         Image(systemName: "text.alignleft")
                             .foregroundColor(.gray)
@@ -68,6 +70,7 @@ struct EditTaskPopup: View {
                 .navigationTitle("Editar Tarea")
                 .navigationBarTitleDisplayMode(.inline)
                 
+                // Botones de guardar y cancelar
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancelar") { dismiss() }
@@ -82,15 +85,16 @@ struct EditTaskPopup: View {
                                 try context.save()
                                 dismiss()
                             } catch {
-                                // Muestra el error al usuario
+                                // Manejo de errores
                                 errorMessage = "Error eliminando la tarea: \(error.localizedDescription)"
                                 showErrorAlert = true
                             }
                         }
                         .tint(.red)
-                        .disabled(!TaskCreateView.isValidName(tempTitle))
+                        .disabled(!TaskCreateView.isValidName(tempTitle)) // Deshabilita la opción de guardar si el nombre no es válido
                     }
                 }
+                // Muestra el error al usuario
                 .alert(isPresented: $showErrorAlert) {
                     Alert(
                         title: Text("¡Oops!"),

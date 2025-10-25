@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-// Modelo utilizado para los datos
+// Modelo utilizado para los datos de las tasks
 @Model
 public class Task{
     @Attribute(.unique) public var id: UUID = UUID()
@@ -18,6 +18,7 @@ public class Task{
     @Attribute var date : Date
     @Attribute var isCompleted : Bool // para verificar si una tarea esta completa o no
     
+    // Inicializador
     init(
         id: UUID = UUID(),
         title: String,
